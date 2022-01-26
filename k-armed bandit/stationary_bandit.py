@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.io as pio
-from plotly.subplots import make_subplots
+import plotly.subplots
 from typing import Callable, Union
 
 pio.kaleido.scope.default_format = "png"
@@ -16,23 +16,26 @@ class ClassicalBandit:
     """A classical Bandit implementation in the context of reinforcement learning
 
     Parameters
-    -----------
-        number_of_levers    : int      -> sets the number of the bandit's levers
-        reward_size         : int      -> the size with which the reward distribution is sampled
-                                          per layer
-        reward_distribution : function -> when given an action, it returns the corresponding reward
-                                          of the reward distribution
-        
-        __stationary_distribution : np.ndarray of shape (number_of_levers, reward_size) -> represents the reward distribution per lever
-        __optimal_action          : int                                                 -> is the true optimal action based on the reward distribution 
+    ----------
+        number_of_levers    : int
+            Sets the number of the bandit's levers
+        reward_size         : int
+            The size with which the reward distribution is sampled per lever
+
+    Attributes
+    ----------
+        reward_distribution : callable
+            When given an action, it returns the corresponding reward of the reward distribution. The shape
+            of the `reward distribution` is (`number_of_levers`, `reward_size`)
 
     Methods
-    -----------
-        get_reward(action : int)       -> returns the appropriate reward for a given action
-        get_reward_distribution()      -> returns the stationary reward distribution
-        get_optimal_action()           -> returns the optimal action
-        
-        __set_reward_distribution()    -> creates the stationary reward distribution for the bandit
+    -------
+        get_reward(action : int)
+            Returns the appropriate reward for a given `action`
+        get_reward_distribution()
+            Returns the stationary reward distribution
+        get_optimal_action()
+            Returns the optimal action
     """
     __stationary_distribution    = None
     __optimal_action             = None
@@ -46,15 +49,17 @@ class ClassicalBandit:
 
 
     def get_reward(self, action: int) -> np.ndarray:
-        """Returns the appropriate reward for a given action
+        """Returns the appropriate reward for a given `action`
         
         Parameters
         ----------
-            action : int -> The action value should be in the range of [0, number_of_levers)
+            action : int
+                The action value should be in the range of `[0, number_of_levers)`
 
         Returns
-        ----------
-            np.ndarray -> A reward from the reward distribution of shape (number_of_levers, reward_size) is selected
+        -------
+            np.ndarray
+                A reward from the reward distribution of shape `(number_of_levers, reward_size)` is selected
         """
 
         return self.reward_distribution(action)
@@ -64,8 +69,9 @@ class ClassicalBandit:
         """Returns the stationary reward distribution
         
         Returns
-        ----------
-            np.ndarray -> The reward distribution of shape (number_of_levers, reward_size)
+        -------
+            np.ndarray
+                The reward distribution of shape `(number_of_levers, reward_size)`
         """
 
         return self.__stationary_distribution
@@ -75,8 +81,9 @@ class ClassicalBandit:
         """Returns the optimal action
         
         Returns
-        ----------
-            int -> The true optimal action
+        -------
+            int
+                Returns the true optimal action determined from the corresponding reward distribution
         """
 
         return self.__optimal_action
@@ -86,8 +93,9 @@ class ClassicalBandit:
         """Depending on the distribution mode, we get the reward from the stationary or non-stationary distribution
 
         Returns 
-        ----------
-            function(action : int) -> A reward is selected based on the created reward distributions
+        -------
+            callable(action : int)
+                A reward is selected based on the created reward distributions
         """
         sigma = np.random.randn(self.number_of_levers)
         mu    = np.random.randn(self.number_of_levers)
@@ -103,19 +111,27 @@ class Agent:
     """The Agent is playing the k-Bandit 
 
     Parameters
-    -----------
-        bandit              : ClassicalBandit -> Configured Bandit for the agent to play
-        epsilon             : float           -> Determines how often the agent will tend to use the greedy action
+    ----------
+        bandit              : ClassicalBandit
+            Configured Bandit for the agent to play
+        epsilon             : float
+            Determines how often the agent will tend to use the greedy action
 
-        __Q                 : np.ndarray      -> Stores the estimated Q-Values for every Bandit's lever
-        __N                 : np.ndarray      -> Stores the count on how often the agent pulled at a certain lever
-        __reward_history    : np.ndarray      -> Stores the rewards which the agent encountered throughout playing the Bandit
-        __action_history    : np.ndarray      -> Stores the actions which the agent encountered throughout playing the Bandit
+        __Q                 : np.ndarray
+            Stores the estimated Q-Values for every Bandit's lever
+        __N                 : np.ndarray
+            Stores the count on how often the agent pulled at a certain lever
+        __reward_history    : np.ndarray
+            Stores the rewards which the agent encountered throughout playing the Bandit
+        __action_history    : np.ndarray
+            Stores the actions which the agent encountered throughout playing the Bandit
 
     Methods
-    -----------
-        play(times: int)               -> The agent will play the Bandit (times) times
-        get_history()                  -> Returns the reward- and action-history
+    -------
+        play(times: int)
+            The agent will play the Bandit (times) times
+        get_history()
+            Returns the reward- and action-history
     """
     __Q              = None
     __N              = None
@@ -133,11 +149,13 @@ class Agent:
         
         Parameters
         ----------
-            times : int -> The number of times the agent should play the bandit
+            times : int
+                The number of times the agent should play the bandit
 
         Returns
-        ----------
-            np.ndarray  -> Returns the estimated Q-Values which were estimated by the agent after playing the Bandit
+        -------
+            np.ndarray
+                Returns the estimated Q-Values which were estimated by the agent after playing the Bandit
         """
         self.__Q              = np.zeros(self.bandit.number_of_levers)
         self.__N              = np.zeros(self.bandit.number_of_levers)
@@ -167,8 +185,9 @@ class Agent:
         """The reward- and action-history is returned which is used in the monitoring
         
         Returns
-        ---------
-            np.ndarray, np.ndarray -> The first return argument is the reward_history and the second one is the action_history
+        -------
+            np.ndarray, np.ndarray
+                The first return argument is the reward_history and the second one is the action_history
         """
 
         return self.__reward_history, self.__action_history
@@ -178,18 +197,23 @@ class BanditMonitoring:
     """Monitor which displays the performance of the agent when playing the k-Bandit
 
     Parameters
-    -----------
-        number_of_levers : int         -> The number of levers which the Bandit had
-        epsilon          : float       -> Determines how often the agent picked the greedy action
-        init_storage     : bool        -> If a storage directory was already created, it will be True, otherwise False and 
-                                          a directory will be created prior to the plots being saved to that directory
+    ----------
+        number_of_levers : int
+            The number of levers which the Bandit had
+        epsilon          : float
+            Determines how often the agent picked the greedy action
+        init_storage     : bool
+            If a storage directory was already created, it will be True, otherwise False and 
+            a directory will be created prior to the plots being saved to that directory
 
     Methods
-    -----------
-        show_reward_distribution(reward_df : pd.DataFrame, order : str)   -> The reward distribution will be displayed as a violin plot and stored 
-                                                                             in "the current working directory/bandit_metrics" path
-        display_performance(history : pd.DataFrame, optimal_action : int) -> Different performance metrics are plotted and stored
-                                                                             in the same directory as show_reward_distribution will store the plots
+    -------
+        show_reward_distribution(reward_df : pd.DataFrame, order : str)
+            The reward distribution will be displayed as a violin plot and stored 
+            in "the current working directory/bandit_metrics" path
+        display_performance(history : pd.DataFrame, optimal_action : int)
+            Different performance metrics are plotted and stored
+            in the same directory as show_reward_distribution will store the plots
     """
 
 
@@ -204,9 +228,11 @@ class BanditMonitoring:
 
         Parameters
         ----------
-            reward_df : pd.DataFrame -> This is the Bandit's reward distribution
-            order     : str          -> Tells the monitor whether reward_df is stored in column- or row-major, the
-                                        default is column-major storage in the dataframe
+            reward_df : pd.DataFrame
+                This is the Bandit's reward distribution
+            order     : str
+                Tells the monitor whether reward_df is stored in column- or row-major, the
+                default is column-major storage in the dataframe
         """
         fig = go.Figure()
         for index in range(reward_df.shape[1]):
@@ -245,8 +271,10 @@ class BanditMonitoring:
 
         Parameters
         ----------
-            history        : pd.DataFrame   -> The history contains the reward- and action-history from the agent
-            optimal_action : int            -> The optimal action which was determined by the reward distributions of the Bandit
+            history        : pd.DataFrame
+                The history contains the reward- and action-history from the agent
+            optimal_action : int
+                The optimal action which was determined by the reward distributions of the Bandit
         """
         timesteps = np.linspace(0, history.iloc[:, 0].to_numpy().shape[0], history.iloc[:, 0].to_numpy().shape[0])
         cumulated_rewards, average_rewards = self.__calculate_reward_metrics(reward_history = history.iloc[:, 0].to_numpy())
@@ -254,7 +282,7 @@ class BanditMonitoring:
         action_history          = history.iloc[:, 1].to_numpy()
         optimal_action_decision = self.__calculate_action_metrics(action_history = action_history, optimal_action = optimal_action)
 
-        fig = make_subplots(rows = 2, cols = 2, 
+        fig = plotly.subplots.make_subplots(rows = 2, cols = 2, 
                             subplot_titles = ("Cumulated Reward Curve", "Average Reward Plot", "Normalised Optimal Action Taken", "Normalised Action Histogram"))
         fig.add_trace(go.Scatter(x = timesteps, y = cumulated_rewards, mode = "lines"), 
                         row = 1, col = 1)
@@ -295,11 +323,13 @@ class BanditMonitoring:
         
         Parameters
         ----------
-            reward_history : np.ndarray     -> The reward history of the agent
+            reward_history : np.ndarray
+                The reward history of the agent
 
         Returns
-        ----------
-            np.ndarray, np.ndarray          -> The first return argument is the cumulated rewards and the second one is the average rewards per timestep
+        -------
+            np.ndarray, np.ndarray
+                The first return argument is the cumulated rewards and the second one is the average rewards per timestep
         """
         timesteps         = reward_history.shape[0]
         cumulated_rewards = np.zeros(timesteps)
@@ -320,12 +350,15 @@ class BanditMonitoring:
 
         Parameters
         ----------
-            action_history : np.ndarray -> The action history of the agent
-            optimal_action : int        -> The true optimal action
+            action_history : np.ndarray
+                The action history of the agent
+            optimal_action : int
+                The true optimal action
         
         Returns
-        ----------
-            np.ndarray                  -> The normalised best action per timestep
+        -------
+            np.ndarray
+                The normalised best action per timestep
         """
         timesteps            = action_history.shape[0]
         optimal_action_taken = np.zeros(timesteps)
