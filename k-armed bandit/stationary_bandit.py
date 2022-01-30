@@ -379,7 +379,8 @@ parser.add_argument('--timesteps',   dest = "timesteps",   type = int,   default
 parser.add_argument('--seed',        dest = "seed",        type = int,   default = 100,  help = "Seed for the PRNG")
 args   = parser.parse_args()
 
-if __name__ == "__main__":
+
+def main():
     NUMBER_OF_LEVERS    = args.k
     REWARD_SIZE         = args.reward_size
     EPSILON             = args.epsilon
@@ -403,3 +404,7 @@ if __name__ == "__main__":
     print(f"The estimated Q values are: \n {Q_estimated}")
     print(f"The estimated optimal action is: \n {np.argmax(Q_estimated)}")
     print(f"The optimal action is: \n {optimal_action}")
+
+
+if __name__ == "__main__":
+    main()
