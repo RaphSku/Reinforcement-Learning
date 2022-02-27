@@ -167,7 +167,7 @@ class PolicyEvaluation:
             array-like  
                 The state matrix is returned
         """
-        max_iteration = 0
+        iteration = 0
         while True:
             delta = 0
             for row in range(self.grid_world.rows):
@@ -176,8 +176,8 @@ class PolicyEvaluation:
                     next_value     = self.__evaluate_subpolicy(row = row, column = column)
                     self.grid_world[row, column] = next_value
                     delta          = max(delta, np.abs(current_value - self.grid_world[row, column]))
-                    max_iteration += 1
-            if max_iteration == max_iterations:
+                    iteration += 1
+            if iteration == max_iterations:
                 if delta >= 0.01:
                     print(f"Evaluation failed because delta which is {delta} is greater than 0.01!")
                 break
