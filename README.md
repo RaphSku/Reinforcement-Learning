@@ -8,9 +8,10 @@
 Implementing several Reinforcement Learning and Deep Reinforcement Learning Algorithms
 
 ### Implemented Algorithms
-| Algorithm | Implemented |
-| --- | --- |
-| k-armed bandit (stationary distribution) | ✔️ |
+| Algorithm | Implemented | Description |
+| --- | --- | --- |
+| k-armed bandit (stationary distribution) | ✔️ | |
+| iterative policy evaluation | ✔️ | 2D Grid World with deterministic transition probability |
 
 
 [contributors-url]: https://github.com/RaphSku
@@ -18,4 +19,4 @@ Implementing several Reinforcement Learning and Deep Reinforcement Learning Algo
 
 [contributors-shield]: https://img.shields.io/badge/Author-RaphSku-orange?style=plastic&labelColor=black
 [license-shield]: https://img.shields.io/badge/License-MIT+-informational?style=plastic&labelColor=black
-[count-shield]: https://img.shields.io/badge/CountAlgorithms-1-red?style=plastic&labelColor=black
+[count-shield]: https://img.shields.io/badge/CountAlgorithms-2-red?style=plastic&labelColor=black
