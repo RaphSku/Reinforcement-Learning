@@ -82,7 +82,7 @@ class Policy:
         self.json_path_to_file = json_path_to_file
 
 
-    def get_policy(self):
+    def get_policy(self) -> Sequence[Sequence[float]]:
         """The JSON file has to be a 2D matrix, filled
         with dictionaries, the dictionary contains as a key
         the name of the state and as a value the array of probabilities
