@@ -17,7 +17,7 @@ Implementing several Reinforcement Learning and Deep Reinforcement Learning Algo
 
 
 [contributors-url]: https://github.com/RaphSku
-[license-url]: https://github.com/RaphSku/micro/blob/main/LICENSE
+[license-url]: https://github.com/RaphSku/Reinforcement-Learning/blob/main/LICENSE
 
 [contributors-shield]: https://img.shields.io/badge/Author-RaphSku-orange?style=plastic&labelColor=black
 [license-shield]: https://img.shields.io/badge/License-MIT+-informational?style=plastic&labelColor=black
