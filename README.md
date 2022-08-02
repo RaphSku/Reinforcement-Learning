@@ -5,7 +5,7 @@
 ![Count Algorithms][count-shield]
 
 ### Goal
-Implementing several Reinforcement Learning and Deep Reinforcement Learning Algorithms
+Implementing several Reinforcement Learning Algorithms
 
 ### Implemented Algorithms
 | Algorithm | Implemented | Description |
